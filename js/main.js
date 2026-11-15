@@ -808,8 +808,8 @@
     probe.remove();
     const marginLeft = Math.ceil(labelW) + 10;
     const marginRight = 18;
-    // X axis starts at the first year with data (e.g. unemployment from 2560) so every line begins at the left edge.
-    const xFrom = spec.from != null ? Math.max(ECON_FROM, Math.min(spec.from, ECON_TO - 1)) : ECON_FROM;
+    // Every chart shares the same 2558–2569 axis so election-year rules line up across cards.
+    const xFrom = ECON_FROM;
     const x = d3.scaleLinear().domain([xFrom, ECON_TO]).range([marginLeft, width - marginRight]);
     svg.append('g').attr('fill', '#9b998f').attr('font-size', 11).attr('text-anchor', 'end')
       .selectAll('text').data(ticks).join('text')
