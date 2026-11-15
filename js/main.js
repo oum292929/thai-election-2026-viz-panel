@@ -721,7 +721,7 @@
     const rows = districtRows(d);
     return rows.map((r, i) => `<tr>
       <td class="rank">${i + 1}</td>
-      <td class="name">${partyMark(r.party, r.color)}${esc(r.party)}</td>
+      <td class="name">${i < 5 ? partyMark(r.party, r.color) : '<span class="sw" style="background:#a8a6a0"></span>'}${esc(r.party)}</td>
       ${showName ? `<td class="cand">${esc(r.name) || '—'}</td>` : ''}
       <td>${fmtInt(r.votes)}</td><td>${fmtPct(r.share)}</td>
     </tr>`).join('') || '<tr><td colspan="5">ไม่มีผลคะแนนในมุมมองนี้</td></tr>';
@@ -789,7 +789,10 @@
     const plotBottom = height - 22;
     const maxV = d3.max([...spec.present, ...spec.avg.filter(d => d.value != null)], d => d.value) || 1;
     const y = d3.scaleLinear().domain([0, maxV]).nice().range([plotBottom, plotTop]);
-    if (y.domain()[0] < 0) y.domain([0, y.domain()[1]]);
+    if (spec.key === 'wage') {
+      const vals = [...spec.present, ...spec.avg.filter(d => d.value != null)].map(d => d.value);
+      if (vals.length) y.domain([Math.max(0, d3.min(vals) - 20), d3.max(vals) + 12]);
+    } else if (y.domain()[0] < 0) y.domain([0, y.domain()[1]]);
     const ticks = y.ticks(5).filter(t => t >= -1e-6);
     const svg = d3.select(host).append('svg')
       .attr('viewBox', `0 0 ${width} ${height}`)
